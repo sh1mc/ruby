@@ -18,6 +18,7 @@
 #include <errno.h>
 #include <float.h>
 #include <math.h>
+#include <stdio.h>
 
 #include "internal.h"
 #include "internal/bignum.h"
@@ -25,6 +26,7 @@
 #include "internal/math.h"
 #include "internal/object.h"
 #include "internal/vm.h"
+#include "internal/numeric.h"
 
 #if defined(HAVE_SIGNBIT) && defined(__GNUC__) && defined(__sun) && \
     !defined(signbit)
@@ -982,6 +984,12 @@ exp1(sqrt)
  *  Domains and codomains are given only for real (not complex) numbers.
  */
 
+static VALUE
+discriminant(VALUE unused_obj, VALUE a, VALUE b, VALUE c)
+{
+    return rb_int_minus(rb_int_mul(b, b), rb_int_mul(INT2NUM(4), rb_int_mul(a, c)));
+}
+
 
 void
 InitVM_Math(void)
@@ -1033,6 +1041,8 @@ InitVM_Math(void)
 
     rb_define_module_function(rb_mMath, "gamma", math_gamma, 1);
     rb_define_module_function(rb_mMath, "lgamma", math_lgamma, 1);
+
+    rb_define_module_function(rb_mMath, "discriminant", discriminant, 3);
 }
 
 void
